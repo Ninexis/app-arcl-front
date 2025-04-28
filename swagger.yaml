@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: Cookie Clicker API
+  description: API for the Cookie Clicker game backend.
+  version: 1.0.0
+servers:
+  - url: https://example.com
+paths:
+  /cookieclicker/load_game_data:
+    get:
+      summary: Load game data for the current player.
+      operationId: loadGameData
+      tags: [CookieClicker]
+      responses:
+        '200':
+          description: Current game state returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameData'
+  /cookieclicker/save_game_data:
+    post:
+      summary: Persist game state on the server.
+      operationId: saveGameData
+      tags: [CookieClicker]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveGameDataRequest'
+      responses:
+        '200':
+          description: Game data saved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Invalid payload sent by the client.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /cookieclicker/buy_building:
+    post:
+      summary: Purchase a building or an autoclicker.
+      operationId: buyBuilding
+      tags: [CookieClicker]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyBuildingRequest'
+      responses:
+        '200':
+          description: Building purchased.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '404':
+          description: Building not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /cookieclicker/delete_building:
+    post:
+      summary: Sell or remove a purchased building.
+      operationId: deleteBuilding
+      tags: [CookieClicker]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteBuildingRequest'
+      responses:
+        '200':
+          description: Building deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+components:
+  schemas:
+    GameData:
+      type: object
+      properties:
+        cookieCount:
+          type: integer
+          example: 100
+        totalCookiesProduced:
+          type: integer
+          example: 500
+        autoClickerCount:
+          type: integer
+          example: 3
+        buildingCount:
+          type: integer
+          example: 2
+        purchased_clicker:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildingPurchase'
+        purchased_buildings:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildingPurchase'
+    BuildingPurchase:
+      type: object
+      properties:
+        cost:
+          type: number
+          example: 10
+        price_increase:
+          type: number
+          example: 1.15
+        cps:
+          type: number
+          example: 2
+    SaveGameDataRequest:
+      type: object
+      required: [cookieCount, totalCookiesProduced]
+      properties:
+        cookieCount:
+          type: integer
+          example: 250
+        totalCookiesProduced:
+          type: integer
+          example: 600
+    BuyBuildingRequest:
+      type: object
+      required: [building_id]
+      properties:
+        building_id:
+          type: integer
+          example: 1
+    DeleteBuildingRequest:
+      type: object
+      required: [building_id]
+      properties:
+        building_id:
+          type: integer
+          example: 1
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Bâtiment acheté"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Bâtiment non trouvé"
+  
