@@ -26,6 +26,9 @@ const CookieClicker: React.FC = () => {
     const addr_master = "http://locahost:5000"
     const addr_slave = "http://locahost:5001"
 
+    const addr_master = import.meta.env.ADDR_MASTER;
+    const addr_slave = import.meta.env.ADRR_SLAVE;
+
   const [data, setData] = useState<GameData>({
     cookieCount: 0,
     totalCookiesProduced: 0,
