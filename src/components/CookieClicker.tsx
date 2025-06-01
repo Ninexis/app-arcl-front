@@ -23,6 +23,9 @@ interface Raindrop {
 }
 
 const CookieClicker: React.FC = () => {
+    const addr_master = "http://locahost:5000"
+    const addr_slave = "http://locahost:5001"
+
   const [data, setData] = useState<GameData>({
     cookieCount: 0,
     totalCookiesProduced: 0,
@@ -39,40 +42,74 @@ const CookieClicker: React.FC = () => {
   const [raining, setRaining] = useState(false);
 
   const fetchGameData = async () => {
-    try {
-      const res = await axios.get<GameData>('http://localhost:5000/home/load_game_data');
-      setData(res.data);
-    } catch (error) {
-      console.error('Erreur lors du chargement des données', error);
-    }
+        try {
+            const res = await axios.get<GameData>(addr_master + '/home/load_game_data');
+            setData(res.data);
+
+        } catch (error) {
+            console.error('Erreur lors du chargement des données dans la node master', error);
+
+            try {
+                const res = await axios.get<GameData>(addr_slave + '/home/load_game_data');
+                setData(res.data);
+
+            } catch (error) {
+                console.error('Erreur lors du chargement des données dans la node slave', error);
+            }
+        }
   };
 
   const saveGameData = async () => {
     try {
-      await axios.post('http://localhost:5000/home/save_game_data', {
+      await axios.post(addr_master + '/home/save_game_data', {
         cookieCount: data.cookieCount,
         totalCookiesProduced: data.totalCookiesProduced,
       });
+
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde', error);
+      console.log('Erreur lors de la sauvegarde dans la node master', error);
+    }
+
+    try {
+      await axios.post(addr_slave + '/home/save_game_data', {
+        cookieCount: data.cookieCount,
+        totalCookiesProduced: data.totalCookiesProduced,
+      });
+
+    } catch (error) {
+      console.log('Erreur lors de la sauvegarde dans la node slave', error);
     }
   };
 
   const buyBuilding = async (building_id: number) => {
     try {
-      await axios.post('http://localhost:5000/home/buy_building', { building_id });
+      await axios.post(addr_master + '/home/buy_building', { building_id });
       fetchGameData();
     } catch (error) {
-      console.error('Erreur achat bâtiment', error);
+      console.log('Erreur achat bâtiment chez la node master', error);
+    }
+
+    try {
+      await axios.post(addr_slave + '/home/buy_building', { building_id });
+      fetchGameData();
+    } catch (error) {
+      console.log('Erreur achat bâtiment chez la node slave', error);
     }
   };
 
   const deleteBuilding = async (building_id: number) => {
     try {
-      await axios.post('http://localhost:5000/home/delete_building', { building_id });
+      await axios.post(addr_master + '/home/delete_building', { building_id });
       fetchGameData();
     } catch (error) {
-      console.error('Erreur suppression bâtiment', error);
+      console.log('Erreur suppression bâtiment chez la node master', error);
+    }
+
+    try {
+      await axios.post(addr_slave + '/home/delete_building', { building_id });
+      fetchGameData();
+    } catch (error) {
+      console.log('Erreur suppression bâtiment chez la node slave', error);
     }
   };
 
