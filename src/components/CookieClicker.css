@@ -12,7 +12,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 300px;
 }
 
 .cloud-image {
@@ -92,8 +96,11 @@
 .cards {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin: 20px auto;
     gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 800px;
 }
 
 .card {
@@ -129,6 +136,10 @@ button {
     z-index: 2;
     text-align: center;
     padding-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Plus de bordure / background bloquant */
