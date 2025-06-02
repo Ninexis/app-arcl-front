@@ -44,14 +44,34 @@ const CookieClicker: React.FC = () => {
   const fetchGameData = async () => {
         try {
             const res = await axios.get<GameData>(addr_master + '/home/load_game_data');
-            setData(res.data);
+            // Ensure values are numeric
+            const numericData = {
+                ...res.data,
+                cookieCount: Number(res.data.cookieCount) || 0,
+                totalCookiesProduced: Number(res.data.totalCookiesProduced) || 0,
+                autoClickerCount: Number(res.data.autoClickerCount) || 0,
+                autoClickerPrice: Number(res.data.autoClickerPrice) || 0,
+                buildingCount: Number(res.data.buildingCount) || 0,
+                buildingPrice: Number(res.data.buildingPrice) || 0
+            };
+            setData(numericData);
 
         } catch (error) {
             console.error('Erreur lors du chargement des données dans la node master', error);
 
             try {
                 const res = await axios.get<GameData>(addr_slave + '/home/load_game_data');
-                setData(res.data);
+                // Ensure values are numeric
+                const numericData = {
+                    ...res.data,
+                    cookieCount: Number(res.data.cookieCount) || 0,
+                    totalCookiesProduced: Number(res.data.totalCookiesProduced) || 0,
+                    autoClickerCount: Number(res.data.autoClickerCount) || 0,
+                    autoClickerPrice: Number(res.data.autoClickerPrice) || 0,
+                    buildingCount: Number(res.data.buildingCount) || 0,
+                    buildingPrice: Number(res.data.buildingPrice) || 0
+                };
+                setData(numericData);
 
             } catch (error) {
                 console.error('Erreur lors du chargement des données dans la node slave', error);
@@ -116,8 +136,8 @@ const CookieClicker: React.FC = () => {
   const clickCloud = () => {
     setData(prev => ({
       ...prev,
-      cookieCount: prev.cookieCount + 1,
-      totalCookiesProduced: prev.totalCookiesProduced + 1,
+      cookieCount: (Number(prev.cookieCount) || 0) + 1,
+      totalCookiesProduced: (Number(prev.totalCookiesProduced) || 0) + 1,
     }));
 
     // nouveau nuage avec position verticale random
@@ -211,13 +231,13 @@ const CookieClicker: React.FC = () => {
 
         <div className="interface">
           <div className="cloud-container" onClick={clickCloud}>
-            <div className="total-count">Total ☁️ {data.totalCookiesProduced} ☁️</div>
+            <div className="total-count">Total ☁️ {Number(data.totalCookiesProduced) || 0} ☁️</div>
             <img
                 src="/cloud.png"
                 alt="Cloud Cookie"
                 className="cloud-image"
             />
-            <div className="current-count">Current ☁️ {data.cookieCount}</div>
+            <div className="current-count">Current ☁️ {Number(data.cookieCount) || 0}</div>
           </div>
 
           <div className="cards">
