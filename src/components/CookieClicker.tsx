@@ -23,8 +23,15 @@ interface Raindrop {
 }
 
 const CookieClicker: React.FC = () => {
-    const addr_master = import.meta.env.ADDR_MASTER;
-    const addr_slave = import.meta.env.ADRR_SLAVE;
+    const addr_master = import.meta.env.VITE_ADDR_MASTER;
+    const addr_slave = import.meta.env.VITE_ADDR_SLAVE;
+
+    console.log(import.meta.env)
+
+    console.log("master")
+    console.log(addr_master)
+    console.log("slave")
+    console.log(addr_slave)
 
   const [data, setData] = useState<GameData>({
     cookieCount: 0,
@@ -67,7 +74,7 @@ const CookieClicker: React.FC = () => {
       });
 
     } catch (error) {
-      console.log('Erreur lors de la sauvegarde dans la node master', error);
+      //console.log('Erreur lors de la sauvegarde dans la node master', error);
     }
 
     try {
@@ -77,7 +84,7 @@ const CookieClicker: React.FC = () => {
       });
 
     } catch (error) {
-      console.log('Erreur lors de la sauvegarde dans la node slave', error);
+      //console.log('Erreur lors de la sauvegarde dans la node slave', error);
     }
   };
 
@@ -86,14 +93,14 @@ const CookieClicker: React.FC = () => {
       await axios.post(addr_master + '/home/buy_building', { building_id });
       fetchGameData();
     } catch (error) {
-      console.log('Erreur achat bâtiment chez la node master', error);
+      //console.log('Erreur achat bâtiment chez la node master', error);
     }
 
     try {
       await axios.post(addr_slave + '/home/buy_building', { building_id });
       fetchGameData();
     } catch (error) {
-      console.log('Erreur achat bâtiment chez la node slave', error);
+      //console.log('Erreur achat bâtiment chez la node slave', error);
     }
   };
 
@@ -102,14 +109,14 @@ const CookieClicker: React.FC = () => {
       await axios.post(addr_master + '/home/delete_building', { building_id });
       fetchGameData();
     } catch (error) {
-      console.log('Erreur suppression bâtiment chez la node master', error);
+      //console.log('Erreur suppression bâtiment chez la node master', error);
     }
 
     try {
       await axios.post(addr_slave + '/home/delete_building', { building_id });
       fetchGameData();
     } catch (error) {
-      console.log('Erreur suppression bâtiment chez la node slave', error);
+      //console.log('Erreur suppression bâtiment chez la node slave', error);
     }
   };
 
